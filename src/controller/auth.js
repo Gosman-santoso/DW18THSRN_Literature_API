@@ -60,8 +60,7 @@ exports.register = async(req, res) => {
             address: joi
                 .string()
                 .min(5)
-                .required(),
-            address: joi.string().min(5)
+                .required()
         });
 
         const { error } = schema.validate(req.body);
@@ -100,8 +99,7 @@ exports.register = async(req, res) => {
             password: hashPassword,
             gender,
             phone,
-            address,
-            avatar: "https://drive.google.com/uc?id=1-Z9M-IGKq0-q7VoNw7ZtN-qaAXDqYlVW"
+            address
         });
 
         // Token send to backend & if valid then continue

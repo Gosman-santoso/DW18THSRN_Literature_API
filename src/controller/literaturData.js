@@ -1,6 +1,92 @@
-const { User, Category, Book, Literature } = require("./../../models");
+const { User, Literature } = require("./../../models");
+const { Op } = require("sequelize");
 
 const joi = require("@hapi/joi");
+
+exports.searchLiterature = async(req, res) => {
+    try {
+        const { title } = req.params;
+        const search = await Literature.findAll({
+            where: {
+                title: {
+                    [Op.like]: title + "%"
+                }
+            }
+        });
+
+        res.send({
+            message: "Data Succsesfully Loaded",
+            data: {
+                search
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            message: "Server error"
+        });
+    }
+};
+
+exports.searchLiteratureDate = async(req, res) => {
+    let title = req.query.title;
+    let public_year = req.query.public_year;
+    try {
+        if (public_year) {
+            const literature = await Literature.findAll({
+                include: [{
+                    model: User,
+                    as: "user_id",
+                    attributes: {
+                        exclude: ["password", "createdAt", "updatedAt"]
+                    }
+                }],
+                attributes: {
+                    exclude: ["UserId", "createdAt", "updatedAt"]
+                },
+                where: {
+                    title: {
+                        [Op.like]: "%" + title + "%"
+                    },
+                    publication_date: {
+                        [Op.gte]: public_year
+                    }
+                },
+                order: [
+                    ["publication_date", "DESC"]
+                ]
+            });
+            res.send({
+                message: `title like ${title} in ${public_year} was found`,
+                literature
+            });
+        } else {
+            const literature = await Literature.findAll({
+                include: [{
+                    model: User,
+                    as: "user_id",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"]
+                    }
+                }],
+                attributes: {
+                    exclude: ["UserId", "createdAt", "updatedAt"]
+                },
+                where: {
+                    title: {
+                        [Op.like]: "%" + title + "%"
+                    }
+                }
+            });
+            res.send({
+                message: `${title} title found`,
+                literature
+            });
+        }
+    } catch (err) {
+        showError(err);
+    }
+};
 
 exports.getLiterature = async(req, res) => {
     try {
@@ -111,57 +197,27 @@ exports.getDetailLiterature = async(req, res) => {
     }
 };
 
+// create with multer
 exports.addLiterature = async(req, res) => {
     try {
-        // const createBook = await Book.create(req.body);
-        // res.send({
-        //     message: "Data succsesfully created",
-        //     data: {
-        //         Book: createBook
-        //     }
-        // });
-
         const {
             title,
-            userId,
+            author,
             publication_date,
             pages,
             ISBN,
-            author,
             status,
-            attache
+            userId
         } = req.body;
 
         const schema = joi.object({
-            title: joi
-                .string()
-                .min(3)
-                .required(),
-            userId: joi.string(),
-            publication_date: joi
-                .string()
-                .min(5)
-                .required(),
-            pages: joi
-                .number()
-                .min(1)
-                .required(),
-            ISBN: joi
-                .number()
-                .min(8)
-                .required(),
-            author: joi
-                .string()
-                .min(3)
-                .required(),
-            status: joi
-                .string()
-                .min(5)
-                .required(),
-            attache: joi
-                .string()
-                .min(5)
-                .required()
+            userId: joi.number(),
+            title: joi.string().required(),
+            author: joi.string().required(),
+            publication_date: joi.string().required(),
+            pages: joi.number().required(),
+            ISBN: joi.string().required(),
+            status: joi.string().required()
         });
 
         const { error } = schema.validate(req.body);
@@ -173,51 +229,78 @@ exports.addLiterature = async(req, res) => {
                 }
             });
         }
-
-        const createLiterature = await Literature.create({
-            title,
-            userId,
-            publication_date,
-            pages,
-            ISBN,
-            author,
-            status,
-            attache,
-            thumbnail: "https://drive.google.com/uc?id=1pyX-I4fAEkmFRDfWiII94C0dJmILg-4m"
-        });
-        res.send({
-            message: "Data succsesfully created",
-            data: {
-                Literature: createLiterature
+        const checkISBN = await Literature.findOne({
+            where: {
+                ISBN
             }
+        });
+
+        if (checkISBN) {
+            return res.status(400).send({
+                message: "ISBN already exists"
+            });
+        }
+
+        const literatureCreated = await Literature.create({
+            ...req.body,
+            file: req.files.file[0].filename,
+            thumbnail: req.files.thumbnail[0].filename
+        });
+
+        res.status(200).send({
+            message: "Literature has successfully created",
+            data: { literatureCreated }
         });
     } catch (err) {
         console.log(err);
         res.status(500).send({
-            message: "Server Error"
+            error: {
+                message: "Server ERROR"
+            }
         });
     }
 };
 
-exports.editBook = async(req, res) => {
+exports.editLiterature = async(req, res) => {
     try {
         const { id } = req.params;
-        const edit = await Book.update(req.body, {
+        const [edit] = await Literature.update(req.body, {
             where: {
                 id
             }
         });
 
-        res.send({
-            message: "Data has been updated",
-            data: {
-                Book: req.body
+        if (!edit)
+            return res.status(404).send({
+                message: "Literature not found!"
+            });
+
+        const data = await Literature.findOne({
+            where: {
+                id
+            },
+            include: {
+                model: User,
+                as: "user_id",
+                attributes: { exclude: ["password", "createdAt", "updatedAt"] }
+            },
+
+            attributes: {
+                exclude: ["createdAt", "updatedAt", "categoryId", "userId"]
             }
         });
-    } catch (err) {
-        console.log(err);
+
+        res.send({
+            status: "success",
+            message: `Literature updated successfully`,
+            data
+        });
+    } catch (error) {
+        console.log(error);
         res.status(500).send({
-            message: "Server Error"
+            status: "error",
+            message: "Internal Server Error",
+            code: 500
         });
     }
 };
@@ -225,7 +308,7 @@ exports.editBook = async(req, res) => {
 exports.deleteBook = async(req, res) => {
     try {
         const { id } = req.params;
-        const dataDeleted = await Book.findOne({
+        const dataDeleted = await Literature.findOne({
             where: {
                 id
             },
@@ -237,7 +320,6 @@ exports.deleteBook = async(req, res) => {
                     "userId",
                     "pages",
                     "ISBN",
-                    "aboutBook",
                     "file",
                     "thumbnail",
                     "status",
@@ -246,7 +328,7 @@ exports.deleteBook = async(req, res) => {
                 ]
             }
         });
-        await Book.destroy({
+        await Literature.destroy({
             where: {
                 id
             }
@@ -255,7 +337,7 @@ exports.deleteBook = async(req, res) => {
         res.send({
             message: `Data with id ${id} has been deleted`,
             data: {
-                Book: dataDeleted
+                Literature: dataDeleted
             }
         });
     } catch (err) {

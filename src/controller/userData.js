@@ -9,7 +9,14 @@ exports.getUsers = async(req, res) => {
                 },
                 {
                     model: Library,
-                    as: "library"
+                    as: "library",
+                    include: [{
+                        model: Literature,
+                        as: "literature",
+                        attributes: {
+                            exclude: ["createdAt", "updatedAt", "userId", "UserId"]
+                        }
+                    }]
                 }
             ],
             attributes: {
@@ -45,19 +52,21 @@ exports.getDetail = async(req, res) => {
                 {
                     model: Library,
                     as: "library",
-                    include: {
+                    include: [{
                         model: Literature,
                         as: "literature",
                         attributes: {
                             exclude: ["createdAt", "updatedAt", "userId", "UserId"]
                         }
-                    }
+                    }]
                 }
             ],
-
             attributes: {
                 exclude: ["createdAt", "updatedAt"]
-            }
+            },
+            order: [
+                ["id", "DESC"]
+            ]
         });
 
         res.send({
@@ -74,25 +83,42 @@ exports.getDetail = async(req, res) => {
     }
 };
 
-exports.editUser = async(req, res) => {
+exports.uploadProfile = async(req, res) => {
     try {
-        const { id } = req.params;
-        const edit = await User.update(req.body, {
+        const id = req.params.id;
+        await User.update({ avatar: req.file.filename }, {
             where: {
                 id
             }
         });
+        const user = await User.findOne({
+            where: {
+                id
+            },
 
+            attributes: {
+                exclude: [
+                    "password",
+                    "phone",
+                    "address",
+                    "gender",
+                    "createdAt",
+                    "updatedAt"
+                ]
+            }
+        });
         res.send({
-            message: "Data has been updated",
+            message: "Profile Picture has changed",
             data: {
-                User: req.body
+                user
             }
         });
     } catch (err) {
         console.log(err);
         res.status(500).send({
-            message: "Server Error"
+            error: {
+                message: "Internal Server Error"
+            }
         });
     }
 };

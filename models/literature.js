@@ -22,12 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     Literature.init({
         title: DataTypes.STRING,
         userId: DataTypes.INTEGER,
-        publication_date: DataTypes.STRING,
+        publication_date: DataTypes.DATE,
         pages: DataTypes.NUMBER,
         ISBN: DataTypes.NUMBER,
         author: DataTypes.STRING,
         status: DataTypes.STRING,
-        attache: DataTypes.STRING,
+        file: DataTypes.STRING,
         thumbnail: DataTypes.STRING
     }, {
         sequelize,

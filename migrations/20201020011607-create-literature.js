@@ -18,11 +18,11 @@ module.exports = {
                     model: "Users",
                     as: "id"
                 },
-                onUpdate: "CASCADE",
+                onUpdate: "SET NULL",
                 onDelete: "CASCADE"
             },
             publication_date: {
-                type: Sequelize.STRING
+                type: Sequelize.DATE
             },
             pages: {
                 type: Sequelize.STRING
@@ -36,7 +36,7 @@ module.exports = {
             status: {
                 type: Sequelize.STRING
             },
-            attache: {
+            file: {
                 type: Sequelize.STRING
             },
             thumbnail: {
