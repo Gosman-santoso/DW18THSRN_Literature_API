@@ -104,7 +104,7 @@ exports.register = async(req, res) => {
 
         // Token send to backend & if valid then continue
         // create jwt token after register succses
-        const token = jwt.sign({
+        const token = await jwt.sign({
                 id: user.id
             },
             key
