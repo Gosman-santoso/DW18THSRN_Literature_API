@@ -31,7 +31,7 @@ const {
 } = require("./../controller/libraryData");
 
 // User
-router.get("/users", auth, getUsers);
+router.get("/users", getUsers);
 router.get("/user/:id", auth, getDetail);
 router.patch("/user/:id", auth, uploadImage("avatar"), uploadProfile);
 
