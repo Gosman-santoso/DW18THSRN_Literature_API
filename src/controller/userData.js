@@ -3,22 +3,22 @@ const { Literature, User, Library } = require("./../../models");
 exports.getUsers = async(req, res) => {
     try {
         const users = await User.findAll({
-            include: [{
-                    model: Literature,
-                    as: "literature"
-                },
-                {
-                    model: Library,
-                    as: "library",
-                    include: [{
-                        model: Literature,
-                        as: "literature",
-                        attributes: {
-                            exclude: ["createdAt", "updatedAt", "userId", "UserId"]
-                        }
-                    }]
-                }
-            ],
+            // include: [{
+            //         model: Literature,
+            //         as: "literature"
+            //     },
+            //     {
+            //         model: Library,
+            //         as: "library",
+            //         include: [{
+            //             model: Literature,
+            //             as: "literature",
+            //             attributes: {
+            //                 exclude: ["createdAt", "updatedAt", "userId", "UserId"]
+            //             }
+            //         }]
+            //     }
+            // ],
             attributes: {
                 exclude: ["password", "createdAt", "updatedAt"]
             }
