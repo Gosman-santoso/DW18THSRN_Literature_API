@@ -2,12 +2,7 @@ const { Literature, User, Library } = require("./../../models");
 
 exports.getUsers = async(req, res) => {
     try {
-        const users = await User.findAll(
-
-            attributes: {
-                exclude: ["password", "createdAt", "updatedAt"]
-            }
-        );
+        const users = await User.findAll();
         res.send({
             message: "User Succsesfully Loaded",
             data: { users }
