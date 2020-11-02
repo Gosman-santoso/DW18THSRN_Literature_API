@@ -94,13 +94,13 @@ exports.getLiterature = async(req, res) => {
             where: {
                 status: "Approved"
             },
-            // include: {
-            //     model: User,
-            //     as: "user_id",
-            //     attributes: {
-            //         exclude: ["createdAt", "updatedAt"]
-            //     }
-            // },
+            include: {
+                model: User,
+                as: "user_id",
+                attributes: {
+                    exclude: ["createdAt", "updatedAt"]
+                }
+            },
             attributes: {
                 exclude: ["createdAt", "updatedAt"]
             },
@@ -118,7 +118,8 @@ exports.getLiterature = async(req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).send({
-            message: "Server Error"
+            message: "Server Error",
+            data: err
         });
     }
 };
@@ -160,6 +161,7 @@ exports.getAdmLiterature = async(req, res) => {
         console.log(err);
         res.status(500).send({
             message: "Server Error"
+
         });
     }
 };
