@@ -171,16 +171,16 @@ exports.getDetailLiterature = async(req, res) => {
             where: {
                 id
             },
-            // include: {
-            //     model: User,
-            //     as: "user_id",
-            //     attributes: {
-            //         exclude: ["createdAt", "updatedAt"]
-            //     }
-            // },
-            // attributes: {
-            //     exclude: ["createdAt", "updatedAt"]
-            // }
+            include: {
+                model: User,
+                as: "user_id",
+                attributes: {
+                    exclude: ["createdAt", "updatedAt"]
+                }
+            },
+            attributes: {
+                exclude: ["createdAt", "updatedAt"]
+            }
         });
 
         res.send({
