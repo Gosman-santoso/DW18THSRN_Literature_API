@@ -11,10 +11,11 @@ module.exports = (sequelize, DataTypes) => {
             Literature.belongsTo(models.User, {
                 as: "user_id",
                 foreignKey: {
-                    name: "userId"
+                    name: "UserId"
                 }
             });
             Literature.hasMany(models.Library, {
+                foreignKey: "userId", //tambahan
                 as: "library"
             });
         }

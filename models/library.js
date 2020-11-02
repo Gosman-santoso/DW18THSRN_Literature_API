@@ -11,20 +11,20 @@ module.exports = (sequelize, DataTypes) => {
             Library.belongsTo(models.Literature, {
                 as: "literature",
                 foreignKey: {
-                    name: "literatureId"
+                    name: "LiteratureId"
                 }
             });
             Library.belongsTo(models.User, {
                 as: "user",
                 foreignKey: {
-                    name: "userId"
+                    name: "UserId"
                 }
             });
         }
     }
     Library.init({
-        literatureId: DataTypes.INTEGER,
-        userId: DataTypes.INTEGER
+        LiteratureId: DataTypes.INTEGER,
+        UserId: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: "Library"
