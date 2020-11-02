@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
                 }
             });
             Literature.hasMany(models.Library, {
-                foreignKey: "userId", //tambahan
+                foreignKey: "literatureId", //tambahan
                 as: "library"
             });
         }
