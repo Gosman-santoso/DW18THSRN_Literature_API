@@ -94,13 +94,13 @@ exports.getLiterature = async(req, res) => {
             where: {
                 status: "Approved"
             },
-            include: {
-                model: User,
-                as: "user_id",
-                attributes: {
-                    exclude: ["createdAt", "updatedAt"]
-                }
-            },
+            // include: {
+            //     model: User,
+            //     as: "user_id",
+            //     attributes: {
+            //         exclude: ["createdAt", "updatedAt"]
+            //     }
+            // },
             attributes: {
                 exclude: ["createdAt", "updatedAt"]
             },
