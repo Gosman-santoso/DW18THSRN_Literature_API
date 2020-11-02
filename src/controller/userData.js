@@ -2,29 +2,27 @@ const { Literature, User, Library } = require("./../../models");
 
 exports.getUsers = async(req, res) => {
     try {
-        const users = await User.findAll();
-
-        // {
-        //     include: [{
-        //             model: Literature,
-        //             as: "literature"
-        //         },
-        //         {
-        //             model: Library,
-        //             as: "library",
-        //             include: [{
-        //                 model: Literature,
-        //                 as: "literature",
-        //                 attributes: {
-        //                     exclude: ["createdAt", "updatedAt", "userId", "UserId"]
-        //                 }
-        //             }]
-        //         }
-        //     ],
-        //     attributes: {
-        //         exclude: ["password", "createdAt", "updatedAt"]
-        //     }
-        // }
+        const users = await User.findAll({
+            include: [{
+                    model: Literature,
+                    as: "literature"
+                },
+                {
+                    model: Library,
+                    as: "library",
+                    include: [{
+                        model: Literature,
+                        as: "literature",
+                        attributes: {
+                            exclude: ["createdAt", "updatedAt", "userId", "UserId"]
+                        }
+                    }]
+                }
+            ],
+            attributes: {
+                exclude: ["password", "createdAt", "updatedAt"]
+            }
+        });
 
         res.send({
             message: "User Succsesfully Loaded",
@@ -46,25 +44,25 @@ exports.getDetail = async(req, res) => {
             where: {
                 id
             },
-            // include: [{
-            //         model: Literature,
-            //         as: "literature",
-            //         attributes: {
-            //             exclude: ["createdAt", "updatedAt"]
-            //         }
-            //     },
-            //     {
-            //         model: Library,
-            //         as: "library",
-            //         include: [{
-            //             model: Literature,
-            //             as: "literature",
-            //             attributes: {
-            //                 exclude: ["createdAt", "updatedAt", "userId", "UserId"]
-            //             }
-            //         }]
-            //     }
-            // ],
+            include: [{
+                    model: Literature,
+                    as: "literature",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"]
+                    }
+                },
+                {
+                    model: Library,
+                    as: "library",
+                    include: [{
+                        model: Literature,
+                        as: "literature",
+                        attributes: {
+                            exclude: ["createdAt", "updatedAt", "userId", "UserId"]
+                        }
+                    }]
+                }
+            ],
             attributes: {
                 exclude: ["createdAt", "updatedAt"]
             },
