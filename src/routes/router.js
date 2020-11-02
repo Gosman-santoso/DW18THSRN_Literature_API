@@ -31,8 +31,8 @@ const {
 } = require("./../controller/libraryData");
 
 // User
-router.get("/users", auth, getUsers);
-router.get("/user/:id", auth, getDetail);
+router.get("/users", getUsers);
+router.get("/user/:id", getDetail);
 router.patch("/user/:id", auth, uploadImage("avatar"), uploadProfile);
 
 // Library
@@ -43,7 +43,7 @@ router.post("/libraries", auth, addLibrary);
 router.delete("/library/:id", auth, removeLibrary);
 
 // Literature
-router.get("/literatures", auth, getLiterature);
+router.get("/literatures", getLiterature);
 router.get("/literature/:id", auth, getDetailLiterature);
 router.post("/literatures", auth, upload("literature"), addLiterature);
 router.patch("/literature/:id", auth, editLiterature);
