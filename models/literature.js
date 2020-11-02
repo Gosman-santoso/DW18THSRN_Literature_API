@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
             Literature.belongsTo(models.User, {
                 as: "user_id",
                 foreignKey: {
-                    name: "UserId"
+                    name: "userId"
                 }
             });
             Literature.hasMany(models.Library, {
