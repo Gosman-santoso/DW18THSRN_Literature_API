@@ -10,8 +10,9 @@ const router = require("./src/routes/router");
 app.use(express.json());
 app.use(cors());
 
-app.use("/uploads", express.static("uploads"));
+// app.use("/uploads", express.static("uploads"));
 
+app.use("/public/img", express.static("public/img"));
 app.use("/public/files", express.static("public/files"));
 app.use("/public/thumbnails", express.static("public/thumbnails"));
 

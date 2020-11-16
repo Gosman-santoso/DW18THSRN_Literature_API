@@ -11,7 +11,8 @@ const {
     getUsers,
     getDetail,
     editUser,
-    uploadProfile
+    uploadProfile,
+
 } = require("../controller/userData");
 const {
     getLiterature,
@@ -31,19 +32,19 @@ const {
 } = require("./../controller/libraryData");
 
 // User
-router.get("/users", getUsers);
-router.get("/user/:id", getDetail);
+router.get("/users", auth, getUsers);
+router.get("/user/:id", auth, getDetail);
+
 router.patch("/user/:id", auth, uploadImage("avatar"), uploadProfile);
 
 // Library
 router.get("/libraries", auth, getLibrary);
-router.get("/library/:id", auth, detailLibrary);
+router.get("/library/:literatureId/:userId", auth, detailLibrary);
 router.post("/libraries", auth, addLibrary);
-router.post("/libraries", auth, addLibrary);
-router.delete("/library/:id", auth, removeLibrary);
+router.delete("/library/:literatureId/:userId", auth, removeLibrary);
 
 // Literature
-router.get("/literatures", getLiterature);
+router.get("/literatures", auth, getLiterature);
 router.get("/literature/:id", auth, getDetailLiterature);
 router.post("/literatures", auth, upload("literature"), addLiterature);
 router.patch("/literature/:id", auth, editLiterature);

@@ -8,6 +8,7 @@ exports.searchLiterature = async(req, res) => {
         const { title } = req.params;
         const search = await Literature.findAll({
             where: {
+                status: "Approved",
                 title: {
                     [Op.like]: title + "%"
                 }
@@ -45,8 +46,9 @@ exports.searchLiteratureDate = async(req, res) => {
                     exclude: ["UserId", "createdAt", "updatedAt"]
                 },
                 where: {
+                    status: "Approved",
                     title: {
-                        [Op.like]: "%" + title + "%"
+                        [Op.like]: title + "%"
                     },
                     publication_date: {
                         [Op.gte]: public_year
@@ -73,8 +75,9 @@ exports.searchLiteratureDate = async(req, res) => {
                     exclude: ["UserId", "createdAt", "updatedAt"]
                 },
                 where: {
+                    status: "Approved",
                     title: {
-                        [Op.like]: "%" + title + "%"
+                        [Op.like]: title + "%"
                     }
                 }
             });
@@ -169,7 +172,7 @@ exports.getAdmLiterature = async(req, res) => {
 exports.getDetailLiterature = async(req, res) => {
     try {
         const { id } = req.params;
-        const detail = await Literature.findOne({
+        const literature = await Literature.findOne({
             where: {
                 id
             },
@@ -188,7 +191,7 @@ exports.getDetailLiterature = async(req, res) => {
         res.send({
             message: `Literature ${id} found`,
             data: {
-                data: detail
+                literature
             }
         });
     } catch (err) {

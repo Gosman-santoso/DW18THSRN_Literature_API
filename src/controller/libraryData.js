@@ -40,35 +40,22 @@ exports.getLibrary = async(req, res) => {
 
 exports.detailLibrary = async(req, res) => {
     try {
-        const { id } = req.params;
+        const { literatureId, userId } = req.params;
         const detail = await Library.findOne({
             where: {
-                id
+                literatureId,
+                userId
             },
-            include: [{
-                    model: Literature,
-                    as: "literature",
-                    attributes: {
-                        exclude: ["createdAt", "updatedAt"]
-                    }
-                },
-                {
-                    model: User,
-                    as: "user",
-                    attributes: {
-                        exclude: ["createdAt", "updatedAt"]
-                    }
-                }
-            ],
             attributes: {
-                exclude: ["LiteratureId", "UserId", "createdAt", "updatedAt"]
+                exclude: ["id", "LiteratureId", "UserId", "createdAt", "updatedAt"]
             }
         });
 
         res.send({
-            message: `Bookmark with id ${id}`,
+            message: `Bookmark with user id ${userId} and literature id ${literatureId} has found`,
             data: {
                 library: detail
+
             }
         });
     } catch (err) {
@@ -90,7 +77,10 @@ exports.addLibrary = async(req, res) => {
         res.send({
             message: "Data Succsesfully Created",
             data: {
-                library: addBookmarks
+                library: {
+                    literatureId,
+                    userId
+                }
             }
         });
     } catch (err) {
@@ -103,25 +93,17 @@ exports.addLibrary = async(req, res) => {
 
 exports.removeLibrary = async(req, res) => {
     try {
-        const { id } = req.params;
-        const remove = await Library.findOne({
-            where: {
-                id
-            },
-            attributes: {
-                exclude: ["createdAt", "updatedAt", "LiteratureId", "UserId"]
-            }
-        });
+        const { literatureId, userId } = req.params;
         await Library.destroy({
             where: {
-                id
+                literatureId,
+                userId
             }
         });
-
         res.send({
             message: `Bookmark removed`,
             data: {
-                library: remove
+                library: `Library with user id ${userId} & literature id ${literatureId} removed`
             }
         });
     } catch (err) {

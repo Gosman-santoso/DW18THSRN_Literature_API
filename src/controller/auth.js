@@ -99,7 +99,8 @@ exports.register = async(req, res) => {
             password: hashPassword,
             gender,
             phone,
-            address
+            address,
+            avatar: "profile-default.jpg"
         });
 
         // Token send to backend & if valid then continue

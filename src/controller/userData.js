@@ -1,4 +1,5 @@
 const { Literature, User, Library } = require("./../../models");
+const { Op } = require("sequelize");
 
 exports.getUsers = async(req, res) => {
     try {
@@ -75,6 +76,39 @@ exports.getDetail = async(req, res) => {
             message: `User ${id} found`,
             data: {
                 User: detail
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            message: "Server Error"
+        });
+    }
+};
+
+exports.getDetailAuthor = async(req, res) => {
+    try {
+        const { id } = req.params;
+        const detail = await Literature.findOne({
+            where: {
+                id
+            },
+            include: {
+                model: User,
+                as: "user_id",
+                attributes: {
+                    exclude: ["createdAt", "updatedAt"]
+                }
+            },
+            attributes: {
+                exclude: ["createdAt", "updatedAt"]
+            }
+        });
+
+        res.send({
+            message: `Literature ${id} found`,
+            data: {
+                data: detail
             }
         });
     } catch (err) {
